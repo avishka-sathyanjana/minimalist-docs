@@ -6,7 +6,7 @@ export const Topbar = () => {
         <nav className="Topbar">
             <div className="logodiv">
                 <img src={Img1} alt="Logo" />
-                <span> Colab Docs </span>
+                <span> Minimalist Docs </span>
             </div>
             <div className="Searchbar">
                 <img src={Img2} alt="" />
