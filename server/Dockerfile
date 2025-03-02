@@ -16,4 +16,5 @@ CMD ["npm", "start"]
 # docker run 
 # --env DATABASE_URL='mongodb+srv://admin:admin@minimalist-doc.udrln.mongodb.net/?retryWrites=true&w=majority&appName=minimalist-doc' 
 # --env CLIENT_ORIGIN='http://minimalist.doc.v0.s3-website-us-east-1.amazonaws.com' 
-# -p 80:3000 --name=minimalist-docs-container
+# -p 80:3000 
+# --name=minimalist-docs-container
