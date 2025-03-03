@@ -25,7 +25,7 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ variables.EC2_HOST }}
+          host: ${{ vars.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
@@ -42,7 +42,7 @@ jobs:
               -p 80:3000 \
               --restart unless-stopped \
               --env DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              --env CLIENT_ORIGIN="{{ variables.CLIENT_ORIGIN }}" \
+              --env CLIENT_ORIGIN="{{ vars.CLIENT_ORIGIN }}" \
               -e NODE_ENV="${{ inputs.environment }}" \
               avishka007/minimalist-docs-server:${{ inputs.version }}
             
