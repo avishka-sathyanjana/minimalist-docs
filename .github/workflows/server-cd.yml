@@ -1,0 +1,52 @@
+name: Server CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to deploy (default: latest)'
+        required: false
+        default: 'latest'
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Pull the specified Docker image
+            docker pull avishka007/minimalist-docs-server:${{ inputs.version }}
+            
+            # Stop and remove the existing container
+            docker stop minimalist-docs-server || true
+            docker rm minimalist-docs-server || true
+            
+            # Run the new container with environment variables
+            docker run -d \
+              --name minimalist-docs-server \
+              -p 80:3000 \
+              --restart unless-stopped \
+              --env DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              --env CLIENT_ORIGIN="{{ variables.CLIENT_ORIGIN }}" \
+              -e NODE_ENV="${{ inputs.environment }}" \
+              avishka007/minimalist-docs-server:${{ inputs.version }}
+            
+            # Clean up unused images
+            docker system prune -af --volumes
+            
+            echo "Deployment to ${{ inputs.environment }} completed with version ${{ inputs.version }}"
